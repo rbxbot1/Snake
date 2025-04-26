@@ -52,19 +52,27 @@ def next_turn(snake, food):
     snake.squares.insert(0, square)
 
     if x == food.coordinates[0] and y == food.coordinates[1]:
+
         global score
+
         score += 1
-      
+
         label.config(text="Score:{}".format(score))
 
         canvas.delete("food")
 
         food = Food()
 
-    
-    del snake.coordinates[-1]
-    canvas.delete(snake.squares[-1])
-    del snake.squares[-1]
+    else:
+
+        del snake.coordinates[-1]
+
+        canvas.delete(snake.squares[-1])
+
+        del snake.squares[-1]
+
+    if check_collisions(snake):
+        game_over()
 
     window.after(SPEED, next_turn, snake, food)
 
@@ -87,6 +95,9 @@ def change_direction(new_direction):
     elif new_direction ==  'down':
         if direction != 'up':
             direction = new_direction
+
+def check_collisions(snake):
+    x, y = snake.coordinates[0]
 
 def game_over():
     pass
@@ -124,6 +135,6 @@ window.bind('<Down>', lambda event: change_direction('down'))
 snake = Snake()
 food = Food()
 
-next_turn(food, snake)
+next_turn(snake, food)
 
 window.mainloop()
