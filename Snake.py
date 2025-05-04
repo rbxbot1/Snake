@@ -48,9 +48,9 @@ class Snake(GameObject):
         self._body_size = BODY_PARTS
         self._coordinates = [[0, 0] for _ in range(BODY_PARTS)]
         self._squares = []
-        self._create_body()
+        self.draw()
 
-    def _create_body(self):
+    def draw(self):
         for x, y in self._coordinates:
             square = self._canvas.create_rectangle(x, y, x + SPACE_SIZE, y + SPACE_SIZE,
                                                    fill=SNAKE_COLOR, tag="snake")
@@ -99,29 +99,29 @@ class SnakeGame:
         self.snake = Snake(self.canvas)
         self.food = Food(self.canvas)
 
-        self._bind_keys()
-        self._center_window()
-        self._next_turn()
+        self.__bind_keys()
+        self.__center_window()
+        self.__next_turn()
 
-    def _bind_keys(self):
-        self.window.bind('<Left>', lambda event: self._change_direction('left'))
-        self.window.bind('<Right>', lambda event: self._change_direction('right'))
-        self.window.bind('<Up>', lambda event: self._change_direction('up'))
-        self.window.bind('<Down>', lambda event: self._change_direction('down'))
+    def __bind_keys(self):
+        self.window.bind('<Left>', lambda event: self.__change_direction('left'))
+        self.window.bind('<Right>', lambda event: self.__change_direction('right'))
+        self.window.bind('<Up>', lambda event: self.__change_direction('up'))
+        self.window.bind('<Down>', lambda event: self.__change_direction('down'))
 
-    def _center_window(self):
+    def __center_window(self):
         self.window.update()
         w, h = self.window.winfo_width(), self.window.winfo_height()
         sw, sh = self.window.winfo_screenwidth(), self.window.winfo_screenheight()
         x, y = int((sw - w) / 2), int((sh - h) / 2)
         self.window.geometry(f"{w}x{h}+{x}+{y}")
 
-    def _change_direction(self, new_dir):
+    def __change_direction(self, new_dir):
         opposites = {'up': 'down', 'down': 'up', 'left': 'right', 'right': 'left'}
         if new_dir != opposites.get(self.direction):
             self.direction = new_dir
 
-    def _next_turn(self):
+    def __next_turn(self):
         self.snake.move(self.direction)
         x, y = self.snake.get_head_position()
 
@@ -134,9 +134,9 @@ class SnakeGame:
             self.snake.remove_tail()
 
         if self._check_collisions():
-            self._game_over()
+            self.__game_over()
         else:
-            self.window.after(SPEED, self._next_turn)
+            self.window.after(SPEED, self.__next_turn)
 
     def _check_collisions(self):
         x, y = self.snake.get_head_position()
@@ -146,7 +146,7 @@ class SnakeGame:
             return True
         return False
 
-    def _game_over(self):
+    def __game_over(self):
         self.canvas.delete(ALL)
         self.canvas.create_text(GAME_WIDTH / 2, GAME_HEIGHT / 2,
                                 font=('consolas', 70), text="GAME OVER", fill="red", tag="gameover")
